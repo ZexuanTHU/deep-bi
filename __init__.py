@@ -14,7 +14,7 @@ config.add_argument('--cuda', default=False,
 config.add_argument('--mode', default='train',
                     help='choose {} or {}'.format('training', 'testing'))
 opt = config.parse_args(['@configuration.txt'])
-print(opt)
+print(vars(opt))
 
 exp_name = opt.name
 nohup = opt.nohup
@@ -52,7 +52,7 @@ if mode == 'training':
     with open(file=os.path.join(result_dir, result_dir + '_configuration.txt'), mode='w') as f:
         _ = vars(opt)
         for key in[*_]:
-            f.write('--{}\n{}'.format(key, _[key]))
+            f.write('--{}\n{}\n'.format(key, _[key]))
 
 # run the experiment
 if nohup:
