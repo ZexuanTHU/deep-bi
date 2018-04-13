@@ -1,0 +1,8 @@
+--name
+exp
+--nohup
+True
+--cuda
+False
+--mode
+training
