@@ -1,4 +1,8 @@
 .vscode/
 .idea/
-.pyc
+*.pyc
 .DS_Store
+__pycache__
+DRIVE/
+.ipynb_checkpoints/
+lalala.ipynb
