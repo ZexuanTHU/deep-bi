@@ -1,9 +1,7 @@
 import torch
 import torchvision
 import torchvision.transforms as transforms
-from cv2transforms import CLAHE, AdjustGamma
 import os
-from dataset import FruitFlyNeuronDataset
 import matplotlib.pyplot as plt
 # transforms.Compose([
 #     transforms.GrayScale(),
@@ -12,10 +10,14 @@ import matplotlib.pyplot as plt
 #     AdjustGamma()
 # ])
 
+import sys
+sys.path.append('./data/')
+from dataset import FruitFlyNeuronDataset
+
 ROOT_DIR = 'DRIVE/training/'
 training_dir = {_: os.path.join(ROOT_DIR, _)
                 for _ in ['images', '1st_manual', 'mask']}
-
+print(os.path, ROOT_DIR)
 imgs_dataset = FruitFlyNeuronDataset(root_dir=training_dir)
 item = imgs_dataset[0]
 for i in item:

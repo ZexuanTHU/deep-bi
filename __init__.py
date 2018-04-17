@@ -58,7 +58,7 @@ if mode == 'training':
 if nohup:
     print('\n 2. Run the {} with nohup'.format(mode))
     os.system(' nohup python -u ./src/retinaNN_{}.py > '.format(mode) +
-              './' + result_dir + '/' + exp_name + '{}.nohup'.format(mode))
+              './' + result_dir + '/' + exp_name + '_{}.nohup'.format(mode))
 else:
     print('\n python ./src/retinaNN_{}.py'.format(mode))
 
