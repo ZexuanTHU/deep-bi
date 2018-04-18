@@ -26,7 +26,7 @@ class FruitFlyNeuronDataset(Dataset):
         self.transforms = transforms
 
     def __len__(self):
-        return len(os.listdir(self.root_dir).items()[0])
+        return len(os.listdir(sorted(self.root_dir.values())[0]))    
 
     def __getitem__(self, idx):
         item_name = {d: os.path.join(self.root_dir[d], sorted(
@@ -34,10 +34,8 @@ class FruitFlyNeuronDataset(Dataset):
         item = {_: io.imread(item_name[_]) for _ in item_name}
 
         if self.transforms:
-            item = self.transforms(item)
+            item['images'] = self.transforms(item['images'])
 
         return item
 
-
-if __name__ == '__main__':
-    pass
+# TODO: MTDataset(Dataset)
