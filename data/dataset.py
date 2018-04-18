@@ -31,8 +31,8 @@ class FruitFlyNeuronDataset(Dataset):
     def __getitem__(self, idx):
         item_name = {d: os.path.join(self.root_dir[d], sorted(
             os.listdir(self.root_dir[d]))[idx]) for d in self.root_dir}
-        item = {_: io.imread(item_name[_]) for _ in item_name}
-
+        item = {_: Image.open(item_name[_]) for _ in item_name}
+        
         if self.transforms:
             item['images'] = self.transforms(item['images'])
 

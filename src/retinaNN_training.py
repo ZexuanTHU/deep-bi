@@ -4,16 +4,12 @@ import torchvision.transforms as transforms
 import os
 import matplotlib.pyplot as plt
 import sys
+import numpy as np
 sys.path.append('./data/')
 from dataset import FruitFlyNeuronDataset
-from cv2transforms import CLAHE
+from cv2transforms import composed_transforms
 
-transforms.Compose([
-    transforms.GrayScale(),
-    transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),
-    CLAHE()
-    # AdjustGamma()
-])
+
 ROOT_DIR = 'DRIVE/training/'
 training_dir = {_: os.path.join(ROOT_DIR, _)
                 for _ in ['images', '1st_manual', 'mask']}
@@ -21,11 +17,14 @@ training_dir = {_: os.path.join(ROOT_DIR, _)
 
 def show_img(item):
     for i in item:
-        assert len(item[i].shape) == 3
+        assert (len(np.array(item[i]).shape) == 3 or 2)
         plt.figure()
         plt.imshow(item[i])
 
-imgs_dataset = FruitFlyNeuronDataset(root_dir=training_dir)
+
+compose = composed_transforms()
+
+imgs_dataset = FruitFlyNeuronDataset(root_dir=training_dir, transforms=compose)
 for i in range(len(imgs_dataset)):
     show_img(imgs_dataset[i])
     if i == 3:

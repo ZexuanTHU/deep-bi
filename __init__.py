@@ -38,7 +38,6 @@ elif os.system == 'win32':
     os.system('mkdir ' + result_dir)
 else:
     os.system('mkdir -p ' + result_dir)
-print('\n 1. Create dir for the experimental results (if not already exits')
 
 # add write_config.py to copy the configuration into experiment folder
 if mode == 'training':
@@ -60,6 +59,7 @@ if nohup:
     os.system(' nohup python -u ./src/retinaNN_{}.py > '.format(mode) +
               './' + result_dir + '/' + exp_name + '_{}.nohup'.format(mode))
 else:
+    os.system('python -u ./src/retinNN_{}.py')
     print('\n python ./src/retinaNN_{}.py'.format(mode))
 
 # Now, training/testing is running with another script
