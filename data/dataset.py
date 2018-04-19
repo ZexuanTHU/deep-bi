@@ -34,7 +34,10 @@ class FruitFlyNeuronDataset(Dataset):
         item = {_: Image.open(item_name[_]) for _ in item_name}
         
         if self.transforms:
-            item['images'] = self.transforms(item['images'])
+            # item['images'] = self.transforms(item['images'])
+            for _ in item_name:
+                item[_] = self.transforms(item[_])
+            
 
         return item
 
