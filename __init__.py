@@ -3,23 +3,33 @@ import os
 import sys
 import argparse
 import torch
-
+from args import opt
 # Read configuration
-config = argparse.ArgumentParser(fromfile_prefix_chars='@')
-config.add_argument('--name', help='input experiment name')
-config.add_argument('--nohup', default=True,
-                    help='if run the experiment nohup, default: True')
-config.add_argument('--cuda', default=False,
-                    help='if enable GPU acceleration, default: False')
-config.add_argument('--mode', default='train',
-                    help='choose {} or {}'.format('training', 'testing'))
-opt = config.parse_args(['@configuration.txt'])
-print(vars(opt))
+# config = argparse.ArgumentParser(fromfile_prefix_chars='@')
+# config.add_argument('--name', help='input experiment name')
+# config.add_argument('--nohup', default=True,
+#                     help='if run the experiment nohup, default: True')
+# config.add_argument('--cuda', default=False,
+#                     help='if enable GPU acceleration, default: False')
+# config.add_argument('--mode', default='train',
+#                     help='choose {} or {}'.format('training', 'testing'))
 
-exp_name = opt.name
-nohup = opt.nohup
-run_gpu = opt.cuda
-mode = opt.mode
+# config.add_argument('--N-subimgs', default=190000, help='number of patches')
+# config.add_argument('--N-epochs', default=10, help='number of training epoch')
+# config.add_argument('--batch-size', default=32, help='batch size')
+# config.add_argument('--patch-height', default=48,
+#                     help='height of patch, (H, W, C)')
+# config.add_argument('--patch-width', default=48,
+#                     help='width of patch, (H, W, C)')
+# global opt
+# opt = vars(config.parse_args(['@configuration.txt']))
+# print(opt)
+opt = vars(opt)
+exp_name = opt['name']
+nohup = opt['nohup']
+run_gpu = opt['cuda']
+mode = opt['mode']
+
 
 if torch.cuda.is_available() and not run_gpu:
     print("WARNING: You have a CUDA device, so you should probably run with --cuda to enable it")
@@ -49,7 +59,7 @@ if mode == 'training':
                                           result_dir + '_configuration.txt'))
 
     with open(file=os.path.join(result_dir, result_dir + '_configuration.txt'), mode='w') as f:
-        _ = vars(opt)
+        _ = opt
         for key in[*_]:
             f.write('--{}\n{}\n'.format(key, _[key]))
 

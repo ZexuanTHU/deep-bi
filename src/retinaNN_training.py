@@ -7,48 +7,21 @@ import os
 import matplotlib.pyplot as plt
 import sys
 import numpy as np
-sys.path.append('./data/')
+sys.path.append('./')
+from args import opt
+sys.path.append('./lib/')
 from dataset import FruitFlyNeuronDataset
 from cv2transforms import composed_transforms, RandomExtract
+from utils import show_img, show_patches, initialize_weights
 
 
-ROOT_DIR = 'DRIVE/training/'
-training_dir = {_: os.path.join(ROOT_DIR, _)
+patch_h = int(opt.patch_height)
+patch_w = int(opt.patch_width)
+N_patches = int(opt.N_subimgs)
+root_dir = opt.root_dir
+
+training_dir = {_: os.path.join(root_dir, _)
                 for _ in ['images', '1st_manual', 'mask']}
-
-
-def show_img(item):
-    for i in item:
-        assert (len(np.array(item[i]).shape) == 3 or 2)
-        plt.figure()
-        plt.imshow(item[i])
-
-
-def show_patches(patches, patches_masks, N_show=10):
-    patches = np.reshape(patches, (190000, 48, 48))
-    patches_masks = np.reshape(patches_masks, (190000, 48, 48))
-    for i in range(N_show):
-        plt.figure()
-        ax1 = plt.subplot(1, 2, 1)
-        ax1.set_title('patch #{}'.format(i))
-        plt.imshow(patches[i])
-        ax2 = plt.subplot(1, 2, 2)
-        ax2.set_title('mask patch #{}'.format(i))
-        plt.imshow(patches_masks[i])
-    plt.show()
-
-
-def initialize_weights(*models):
-    for model in models:
-        for module in model.modules():
-            if isinstance(module, nn.Conv2d) or isinstance(module, nn.Linear):
-                nn.init.kaiming_normal(module.weight)
-                if module.bias is not None:
-                    module.bias.data.zero_()
-            elif isinstance(module, nn.BatchNorm2d):
-                module.weight.data.fill_(1)
-                module.bias.data.zero_()
-
 
 compose = composed_transforms()
 
@@ -62,20 +35,18 @@ compose = composed_transforms()
 #         plt.show()
 #         break
 
-test = FruitFlyNeuronDataset(root_dir=training_dir, transforms=compose)
+training_dataset = FruitFlyNeuronDataset(
+    root_dir=training_dir, transforms=compose)
 full_imgs = np.empty((20, 584, 565))
 full_masks = np.empty((20, 584, 565))
-for i in range(len(test)):
-    full_imgs[i] = test[i]['images']
-    full_masks[i] = test[i]['mask']
+for i in range(len(training_dataset)):
+    full_imgs[i] = training_dataset[i]['images']
+    full_masks[i] = training_dataset[i]['mask']
 full_imgs = np.reshape(full_imgs, (20, 584, 565, 1)).transpose((0, 3, 1, 2))
 full_masks = np.reshape(full_masks, (20, 584, 565, 1)).transpose((0, 3, 1, 2))
-rx = RandomExtract(patch_h=48, patch_w=48, N_patches=190000)
+rx = RandomExtract(patch_h=patch_h, patch_w=patch_w, N_patches=N_patches)
 patches, patches_masks = rx(full_imgs=full_imgs, full_masks=full_masks)
 show_patches(patches, patches_masks)
-
-
-from ..utils import initialize_weights
 
 
 class _EncoderBlock(nn.Module):
@@ -156,6 +127,7 @@ class UNet(nn.Module):
             torch.cat([dec2, F.upsample(enc1, dec2.size()[2:], mode='bilinear')], 1))
         final = self.final(dec1)
         return F.upsample(final, x.size()[2:], mode='bilinear')
+
 
 net = UNet(10)
 print(net)
