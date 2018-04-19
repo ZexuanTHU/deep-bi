@@ -133,6 +133,7 @@ class RandomExtract(object):
                 k += 1  # per full_img
         return patches, patches_masks
 
+
 def is_patch_inside_FOV(x, y, img_w, img_h, patch_h):
     x_ = x - int(img_w/2)  # origin (0,0) shifted to image center
     y_ = y - int(img_h/2)  # origin (0,0) shifted to image center
@@ -143,3 +144,5 @@ def is_patch_inside_FOV(x, y, img_w, img_h, patch_h):
         return True
     else:
         return False
+
+
